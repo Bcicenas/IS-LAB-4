@@ -10,18 +10,22 @@ pozymiai_tinklo_mokymui = pozymiai_raidems_atpazinti(pavadinimas, 8);
 % poþymiai ið celiø masyvo perkeliami �? matricà
 % take the features from cell-type variable and save into a matrix-type variable
 P = cell2mat(pozymiai_tinklo_mokymui);
+display(P)
 % sukuriama teisingø atsakymø matrica: 11 raidþiø, 8 eilutës mokymui
 % create the matrices of correct answers for each line (number of matrices = number of symbol lines)
 T = [eye(11), eye(11), eye(11), eye(11), eye(11), eye(11), eye(11), eye(11)];
 % sukuriamas SBF tinklas duotiems P ir T sàryðiams
 % create an RBF network for classification with 13 neurons, and sigma = 1
-tinklas = newrb(P,T,0,1,13);
+% tinklas = newrb(P,T,0,1,13);
 
+tinklas2 = newff(P,T,[13 15]);
+tinklas2.trainParam.epochs = 10000;
+tinklas2 = train(tinklas2,P,T);
 %% Tinklo patikra | Test of the network (recognizer)
 % skaièiuojamas tinklo iðëjimas neþinomiems poþymiams
 % estimate output of the network for unknown symbols (row, that were not used during training)
 P2 = P(:,12:22);
-Y2 = sim(tinklas, P2);
+Y2 = sim(tinklas2, P2);
 % ieðkoma, kuriame iðëjime gauta didþiausia reikðmë
 % find which neural network output gives maximum value
 [a2, b2] = max(Y2);
@@ -76,7 +80,7 @@ pozymiai_patikrai = pozymiai_raidems_atpazinti(pavadinimas, 1);
 P2 = cell2mat(pozymiai_patikrai);
 % skaièiuojamas tinklo iðëjimas neþinomiems poþymiams
 % estimating neuran network output for newly estimated features
-Y2 = sim(tinklas, P2);
+Y2 = sim(tinklas2, P2);
 % ieðkoma, kuriame iðëjime gauta didþiausia reikðmë
 % searching which output gives maximum value
 [a2, b2] = max(Y2);
@@ -124,7 +128,7 @@ pozymiai_patikrai = pozymiai_raidems_atpazinti(pavadinimas, 1);
 % poþymiai ið celiø masyvo perkeliami �? matricà
 P2 = cell2mat(pozymiai_patikrai);
 % skaièiuojamas tinklo iðëjimas neþinomiems poþymiams
-Y2 = sim(tinklas, P2);
+Y2 = sim(tinklas2, P2);
 % ieðkoma, kuriame iðëjime gauta didþiausia reikðmë
 [a2, b2] = max(Y2);
 %% Rezultato atvaizdavimas
